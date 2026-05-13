@@ -1,13 +1,14 @@
-package com.library.books;//getOwner, display, changeOwner yazılmalı
+package com.library.books;
 
 import com.library.constants.BookStatus;
+import com.library.user.Author;
 import com.library.user.Reader;
 
 import java.time.LocalDate;
 
 public class Book {
     private int bookID;
-    private String author;
+    private Author author;
     private String bookName;
     private double price;
     private BookStatus status;
@@ -16,7 +17,7 @@ public class Book {
     private Reader owner;
 
 
-    public Book(int bookID, String author, String bookName, double price, BookStatus status, String edition, LocalDate dateOfPurchase) {
+    public Book(int bookID, Author author, String bookName, double price, BookStatus status, String edition, LocalDate dateOfPurchase) {
         this.bookID = bookID;
         this.author = author;
         this.bookName = bookName;
@@ -35,11 +36,11 @@ public class Book {
         this.bookID = bookID;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
@@ -94,7 +95,11 @@ public class Book {
 
     public void display() {
         String ownerName = (owner != null) ? owner.getName() : "None (In Library)";
-        System.out.println("ID: " + bookID + " | Ad: " + bookName + " | Owner: " + ownerName + " | Status: " + status);
+        System.out.println("ID: " + bookID +
+                " | Kitap: " + bookName +
+                " | Yazar: " + author.getName() +
+                " | Sahibi: " + ownerName +
+                " | Durum: " + status);
     }
 
     public Reader getOwner() {
