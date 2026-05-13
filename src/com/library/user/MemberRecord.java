@@ -2,15 +2,15 @@ package com.library.user;
 
 import com.library.books.Book;
 import com.library.constants.BookStatus;
+import com.library.constants.Type;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-// Diyagramdaki hiyerarşiyi korumak için abstract yapıyoruz
 public class MemberRecord extends Person {
     private Long memberId;
-    private String type; // Student veya Faculty
+    private Type type; // Student veya Faculty
     private LocalDate dateOfMembership;
     private int noBooksIssued = 0;
     private int maxBookLimit = 5;
@@ -18,7 +18,7 @@ public class MemberRecord extends Person {
     private String phoneNo;
     private List<Book> borrowedBooks;
 
-    public MemberRecord(Long personId, String name, String address, String phoneNo, String type) {
+    public MemberRecord(Long personId, String name, String address, String phoneNo, Type type) {
         super(personId, name);
         this.memberId = personId;
         this.address = address;
@@ -32,7 +32,7 @@ public class MemberRecord extends Person {
 
     }
 
-    // Diyagramdaki canBorrowBook() metodu
+
     public boolean canBorrowBook() {
         return noBooksIssued < maxBookLimit;
     }
@@ -53,7 +53,6 @@ public class MemberRecord extends Person {
         }
     }
 
-    // Diyagramdaki returnBook() metodu
     public void returnBook(Book book) {
         if (borrowedBooks.contains(book)) {
             borrowedBooks.remove(book);
@@ -85,4 +84,5 @@ public class MemberRecord extends Person {
     public String getAddress() {return address;}
     public String getPhoneNo() {return phoneNo;}
     public LocalDate getDateOfMembership() {return dateOfMembership;}
+    public Type getType() {return type;}
 }
