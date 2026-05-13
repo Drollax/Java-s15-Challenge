@@ -2,22 +2,24 @@ package com.library.books;
 
 import com.library.constants.BookStatus;
 import com.library.user.Author;
-import com.library.user.Reader;
+import com.library.user.MemberRecord;
 
 import java.time.LocalDate;
 
+
 public class Book {
-    private int bookID;
+    private long bookID;
     private Author author;
     private String bookName;
     private double price;
     private BookStatus status;
     private String edition;
     private LocalDate dateOfPurchase;
-    private Reader owner;
+    private MemberRecord owner;
+    private Category category;
 
 
-    public Book(int bookID, Author author, String bookName, double price, BookStatus status, String edition, LocalDate dateOfPurchase) {
+    public Book(long bookID, Author author, String bookName, double price, BookStatus status, String edition, LocalDate dateOfPurchase, Category category) {
         this.bookID = bookID;
         this.author = author;
         this.bookName = bookName;
@@ -26,9 +28,10 @@ public class Book {
         this.edition = edition;
         this.dateOfPurchase = dateOfPurchase;
         this.owner = null;
+        setCategory(category);
     }
 
-    public int getBookID() {
+    public long getBookID() {
         return bookID;
     }
 
@@ -52,6 +55,25 @@ public class Book {
         this.bookName = bookName;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category newCategory) {
+        // 1. Eğer kitabın eski bir kategorisi varsa, o kategorinin Set'inden bu kitabı çıkar
+        if (this.category != null) {
+            this.category.removeBook(this);
+        }
+
+        // 2. Yeni kategoriyi ata
+        this.category = newCategory;
+
+        // 3. Yeni kategori null değilse, bu kitabı o kategorinin Set'ine ekle
+        if (this.category != null) {
+            this.category.addBook(this);
+        }
+    }
+
     public double getPrice() {
         return price;
     }
@@ -66,9 +88,9 @@ public class Book {
 
     public void updateStatus(BookStatus newStatus) {
 
-        if (this.status == BookStatus.BOUGHT && newStatus == BookStatus.BORROWED){
+        if (this.status == BookStatus.BORROWED && newStatus == BookStatus.BORROWED){
 
-            System.out.println("Error: You can not borrow or reserve a book, that is bought");
+            System.out.println("Error: You can not borrow the book that is already borrowed");
 
         } else
             {
@@ -94,19 +116,28 @@ public class Book {
     }
 
     public void display() {
+        // Sahibi varsa ismini, yoksa kütüphanede olduğunu belirtir
         String ownerName = (owner != null) ? owner.getName() : "None (In Library)";
+
+        // Kategorinin enum değerini kontrol eder
+        String catName = (category != null) ? category.getCategoryName() : "No Category";
+
+        System.out.println("---------------------------------------------------------");
         System.out.println("ID: " + bookID +
                 " | Kitap: " + bookName +
-                " | Yazar: " + author.getName() +
-                " | Sahibi: " + ownerName +
-                " | Durum: " + status);
+                " | Yazar: " + author.getName());
+        System.out.println("Tür: " + catName +
+                " | Fiyat: " + price + " TL" +
+                " | Durum: " + status +
+                " | Sahibi: " + ownerName);
+        System.out.println("---------------------------------------------------------");
     }
 
-    public Reader getOwner() {
+    public MemberRecord getOwner() {
         return owner;
     }
 
-    public void changeOwner(Reader newOwner){
+    public void changeOwner(MemberRecord newOwner){
         if (newOwner == null) {
             this.owner = null;
             System.out.println("The book has been returned to the library. Current owner: None");
@@ -114,6 +145,7 @@ public class Book {
             this.owner = newOwner;
             System.out.println("The book is now assigned to: " + newOwner.getName());
         }
+
 
     }
 }

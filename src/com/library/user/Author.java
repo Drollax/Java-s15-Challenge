@@ -8,8 +8,8 @@ public class Author extends Person {
 
     private List<Book> booksWritten;
 
-    public Author(String name) {
-        super(name);
+    public Author(long personId, String name) {
+        super(personId,name);
         this.booksWritten = new ArrayList<>();
     }
 
