@@ -1,7 +1,6 @@
 package com.library.user;
 
 import com.library.books.Book;
-import com.library.constants.BookStatus;
 import com.library.constants.Type;
 
 import java.time.LocalDate;
@@ -32,48 +31,14 @@ public class MemberRecord extends Person {
 
     }
 
-
-    public boolean canBorrowBook() {
-        return noBooksIssued < maxBookLimit;
+    public void addBorrowedBook(Book book) {
+        this.borrowedBooks.add(book);
+        this.noBooksIssued = borrowedBooks.size();
     }
 
-    public void borrowBook(Book book) {
-        // Kitap müsait mi ve kullanıcının limiti var mı?
-        if (book.getStatus() == BookStatus.AVAILABLE) {
-            if (canBorrowBook()) {
-                borrowedBooks.add(book);
-                noBooksIssued++; // Alınan kitap sayısını artır
-                book.updateStatus(BookStatus.BORROWED);
-                book.changeOwner(this);
-            } else {
-                System.out.println("Hata: " + getName() + " için maksimum kitap limitine (" + maxBookLimit + ") ulaşıldı.");
-            }
-        } else {
-            System.out.println("Hata: '" + book.getBookName() + "' şu an mevcut değil.");
-        }
-    }
-
-    public void returnBook(Book book) {
-        if (borrowedBooks.contains(book)) {
-            borrowedBooks.remove(book);
-            noBooksIssued--; // Sayacı azalt
-            book.updateStatus(BookStatus.AVAILABLE);
-            book.changeOwner(null);
-            System.out.println(book.getBookName() + " iade edildi. Kalan kota: " + (maxBookLimit - noBooksIssued));
-        } else {
-            System.out.println("Hata: Bu kitap ödünç listesinde bulunamadı.");
-        }
-    }
-
-    public void showBook() {
-        System.out.println("--- " + getName() + " Tarafından Ödünç Alınan Kitaplar ---");
-        if (borrowedBooks.isEmpty()) {
-            System.out.println("Ödünç alınmış kitap yok.");
-        } else {
-            for (Book b : borrowedBooks) {
-                b.display();
-            }
-        }
+    public void removeBorrowedBook(Book book) {
+        this.borrowedBooks.remove(book);
+        this.noBooksIssued = borrowedBooks.size();
     }
 
 

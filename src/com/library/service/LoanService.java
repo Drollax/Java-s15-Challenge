@@ -15,11 +15,8 @@ public class LoanService {
     }
 
     public Bill borrowBook(MemberRecord member, Book book) {
-        // limit ve durumun kontrolü
-        if (member.getNoBooksIssued() >= member.getMaxBookLimit()) {
-            System.out.println("Hata: " + member.getName() + " maksimum kitap limitine ulaştı!");
-            return null;
-        }
+
+
 
         if (book.getStatus() != BookStatus.AVAILABLE) {
             System.out.println("Hata: " + book.getBookName() + " şu an mevcut değil.");
@@ -29,7 +26,7 @@ public class LoanService {
         // ödünç alma
         book.updateStatus(BookStatus.BORROWED); // Durum NOT_AVAILABLE olur
         book.changeOwner(member);               // Owner set edilir
-        member.getBorrowedBooks().add(book);
+        member.addBorrowedBook(book);
 
 
         Bill newBill = new Bill(++billCounter, book.getPrice());
@@ -45,7 +42,7 @@ public class LoanService {
         if (member.getBorrowedBooks().contains(book)) {
             book.updateStatus(BookStatus.AVAILABLE);
             book.changeOwner(null);
-            member.getBorrowedBooks().remove(book);
+            member.removeBorrowedBook(book);
 
             System.out.println(book.getBookName() + " iade edildi. Kayıtlar güncellendi.");
         } else {

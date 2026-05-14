@@ -50,7 +50,7 @@ public class BookRepo {
                 .collect(Collectors.toList());
     }
 
-    // Daha önce konuştuğumuz Set mantığını burada verimli kullanıyoruz
+    // set aynı kitaptan aynı kategoride bir tane daha olmasını engelliyor
     public List<Book> findByCategory(Category category) {
         if (category != null) {
             return new ArrayList<>(category.getBooks());

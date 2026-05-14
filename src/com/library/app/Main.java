@@ -7,10 +7,7 @@ import com.library.constants.Type;
 import com.library.entity.Library;
 import com.library.service.Bill;
 import com.library.service.LoanService;
-import com.library.user.Author;
-import com.library.user.Librarian;
-import com.library.user.MemberRecord;
-import com.library.user.Student;
+import com.library.user.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -162,6 +159,7 @@ public class Main {
         System.out.print("İşlem yapacak Üye ID: ");
         long memberId = scanner.nextLong();
 
+
         MemberRecord member = library.getMembers().stream()
                 .filter(m -> m.getMemberId().equals(memberId))
                 .findFirst()
@@ -186,7 +184,7 @@ public class Main {
             return;
         }
 
-        // 3. Kitabı Seç
+
         System.out.print("Ödünç alınacak Kitap ID: ");
         long bookId = scanner.nextLong();
         Book book = library.getBookRepository().findById(bookId);
@@ -196,7 +194,7 @@ public class Main {
             return;
         }
 
-        // 4. Ödünç Verme İşlemi ve Fatura
+
         Bill bill = loanService.borrowBook(member, book);
         if (bill != null) {
             System.out.println("\nİşlem Başarılı!");
@@ -234,7 +232,7 @@ public class Main {
             System.out.println("ID: " + b.getBookID() + " | İsim: " + b.getBookName() + " | Fiyat: " + b.getPrice() + " TL");
         }
 
-        // 2. İade Edilecek Kitabı Seç
+
         System.out.print("İade edilecek kitapID: ");
         long bookId = scanner.nextLong();
         Book book = library.getBookRepository().findById(bookId);
@@ -244,12 +242,8 @@ public class Main {
             return;
         }
 
-        // 3. İade İşlemi (LoanService üzerinden)
-        // Bu metod kitabın owner'ını null yapar ve status'ü AVAILABLE çeker.
         loanService.returnBook(member, book);
 
-        // 4. Ücret İadesi ve Bilgilendirme
-        // Diyagram kuralı: Kitap iade edildiğinde refund=true olur.
         System.out.println("\nİade İşlemi Başarılı!");
         System.out.println("Üye: " + member.getName());
         System.out.println("Kitap: " + book.getBookName());
@@ -259,7 +253,7 @@ public class Main {
     private static void kitapGuncelle() {
         System.out.print("Güncellenecek Kitap ID: ");
         long id = scanner.nextLong();
-        scanner.nextLine(); // Boşluk temizleme
+        scanner.nextLine();
 
         Book book = library.getBookRepository().findById(id);
 
@@ -276,14 +270,12 @@ public class Main {
 
         System.out.print("Yeni İsim (Mevcut: " + book.getBookName() + "): ");
         String newTitle = scanner.nextLine();
-        if (!newTitle.isEmpty())
-
-        book.setBookName(newTitle);
+        if (!newTitle.isEmpty()) book.setBookName(newTitle);
 
         System.out.print("Yeni Yazar (Mevcut: " + book.getAuthor().getName() + "): ");
         String newAuthorName = scanner.nextLine();
         if (!newAuthorName.isEmpty()) {
-            // Mevcut yazar mantığını kullanıyoruz
+
             Author targetAuthor = null;
             for (Book b : library.getBookRepository().findAll()) {
                 if (b.getAuthor().getName().equalsIgnoreCase(newAuthorName)) {
@@ -310,7 +302,7 @@ public class Main {
             }
             if (targetCategory == null) {
                 targetCategory = new Category(categoryIdCounter++, newCatName);
-                System.out.println("-> Yeni kategori oluşturuldu.");
+                System.out.println("Yeni kategori oluşturuldu.");
             }
             book.setCategory(targetCategory);
         }
@@ -321,7 +313,7 @@ public class Main {
             book.setPrice(Double.parseDouble(priceInput));
         }
 
-        System.out.println("\n[SİSTEM]: Kitap bilgileri başarıyla güncellendi.");
+        System.out.println("\nKitap bilgileri başarıyla güncellendi.");
     }
 
 
@@ -351,7 +343,8 @@ public class Main {
 
         library.addMember(new Student(2001L, "Ahmet Yılmaz", "İstanbul", "555-0101", "STU-001"));
         library.addMember(new Student(2002L, "Ayşe Demir", "Ankara", "555-0202", "STU-002"));
-        library.addMember(new MemberRecord(2003L, "Canberk Bey", "İzmir", "555-0303", Type.MEMBER));
+        library.addMember(new Faculty(2003L, "Yazılım", "Ankara", "555-0202", "FC-101"));
+        library.addMember(new MemberRecord(2004L, "Canberk Bey", "İzmir", "555-0303", Type.MEMBER));
 
         System.out.println("yüklendi");
     }

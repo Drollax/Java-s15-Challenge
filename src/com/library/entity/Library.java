@@ -21,7 +21,7 @@ public class Library {
         this.librarians = new ArrayList<>();
     }
 
-    // --- Kitap Yönetimi ---
+
     public void addBook(Book book) {
         bookRepo.addBook(book);
     }
@@ -30,7 +30,7 @@ public class Library {
         bookRepo.removeBook(bookId);
     }
 
-    // --- Üye ve Kütüphaneci Yönetimi ---
+
     public void addMember(MemberRecord member) {
         if (!members.contains(member)) {
             members.add(member);
@@ -45,7 +45,7 @@ public class Library {
         }
     }
 
-    // --- Bilgi Gösterimi ---
+
     public void showBooks() {
         System.out.println("\n--- " + libraryName + " Kitap Listesi ---");
         for (Book book : bookRepo.findAll()) {
@@ -53,7 +53,7 @@ public class Library {
         }
     }
 
-    // --- Getter Metodları ---
+
     public BookRepo getBookRepository() { return bookRepo; }
     public List<MemberRecord> getMembers() { return members; }
     public List<Librarian> getLibrarians() { return librarians; }

@@ -117,7 +117,7 @@ public class Book {
         // Sahibi varsa ismini, yoksa kütüphanede olduğunu belirtir
         String ownerName = (owner != null) ? owner.getName() : "None (In Library)";
 
-        // Kategorinin enum değerini kontrol eder
+        // Kategorinin değerini kontrol eder
         String catName = (category != null) ? category.getCategoryName() : "No Category";
 
         System.out.println("---------------------------------------------------------");
