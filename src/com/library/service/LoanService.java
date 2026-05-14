@@ -39,6 +39,7 @@ public class LoanService {
 
         System.out.println("İşlem Başarılı! Fatura No: " + newBill.getBillNo());
         return newBill;
+
     }
 
     // Diyagramdaki returnBook metodu

@@ -60,15 +60,13 @@ public class Book {
     }
 
     public void setCategory(Category newCategory) {
-        // 1. Eğer kitabın eski bir kategorisi varsa, o kategorinin Set'inden bu kitabı çıkar
+
         if (this.category != null) {
             this.category.removeBook(this);
         }
 
-        // 2. Yeni kategoriyi ata
         this.category = newCategory;
 
-        // 3. Yeni kategori null değilse, bu kitabı o kategorinin Set'ine ekle
         if (this.category != null) {
             this.category.addBook(this);
         }
