@@ -10,14 +10,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BookRepo {
-    // Diyagramdaki - books : Map<Long, Book> alanı
+
     private Map<Long, Book> books;
 
     public BookRepo() {
         this.books = new HashMap<>();
     }
 
-    // --- Temel Kayıt İşlemleri ---
     public void addBook(Book book) {
         if (book != null) {
             books.put(book.getBookID(), book);
@@ -28,15 +27,12 @@ public class BookRepo {
     public void removeBook(long bookId) {
         if (books.containsKey(bookId)) {
             Book removedBook = books.remove(bookId);
-            // Kitabı kategorisinden de temizleyelim
             if (removedBook.getCategory() != null) {
                 removedBook.getCategory().removeBook(removedBook);
             }
             System.out.println("ID " + bookId + " olan kitap depodan silindi.");
         }
     }
-
-    // --- Diyagramdaki Arama Metodları ---
 
     public Book findById(long bookId) {
         return books.get(bookId);

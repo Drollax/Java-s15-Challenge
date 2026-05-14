@@ -14,9 +14,8 @@ public class LoanService {
         this.bills = new ArrayList<>();
     }
 
-    // Diyagramdaki borrowBook metodu
     public Bill borrowBook(MemberRecord member, Book book) {
-        // Genel Kurallar 1 & 2: Limit ve Durum Kontrolü
+        // limit ve durumun kontrolü
         if (member.getNoBooksIssued() >= member.getMaxBookLimit()) {
             System.out.println("Hata: " + member.getName() + " maksimum kitap limitine ulaştı!");
             return null;
@@ -27,13 +26,12 @@ public class LoanService {
             return null;
         }
 
-        // Genel Kurallar 3 & 4: Ödünç Alma İşlemi
+        // ödünç alma
         book.updateStatus(BookStatus.BORROWED); // Durum NOT_AVAILABLE olur
         book.changeOwner(member);               // Owner set edilir
         member.getBorrowedBooks().add(book);
-        // MemberRecord içindeki noBooksIssued artırımı burada veya member.borrowBook içinde yapılabilir.
 
-        // Fatura Oluşturma
+
         Bill newBill = new Bill(++billCounter, book.getPrice());
         bills.add(newBill);
 
@@ -42,10 +40,9 @@ public class LoanService {
 
     }
 
-    // Diyagramdaki returnBook metodu
+    // geri iade
     public void returnBook(MemberRecord member, Book book) {
         if (member.getBorrowedBooks().contains(book)) {
-            // Genel Kurallar 5 & 6: İade İşlemi
             book.updateStatus(BookStatus.AVAILABLE);
             book.changeOwner(null);
             member.getBorrowedBooks().remove(book);

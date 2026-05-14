@@ -73,7 +73,7 @@ public class Main {
         System.out.print("Fiyat: "); double price = scanner.nextDouble();
 
 
-        // 1. Mevcut yazarlar arasında ara
+        // yazarı aradım
         Author targetAuthor = null;
         for (Book b : library.getBookRepository().findAll()) {
             if (b.getAuthor().getName().equalsIgnoreCase(authorName)) {
@@ -82,7 +82,6 @@ public class Main {
             }
         }
 
-        // 2. Yazar yoksa sayacı kullanarak yeni bir ID ile oluştur
         if (targetAuthor == null) {
             targetAuthor = new Author(authorIdCounter++, authorName);
             System.out.println("Yeni yazar oluşturuldu (ID: " + targetAuthor.getPersonId() + ")");
@@ -90,9 +89,9 @@ public class Main {
             System.out.println("Kitap mevcut yazara bağlandı (ID: " + targetAuthor.getPersonId() + ")");
         }
 
+        //kategoride aynı şekilde
         Category targetCategory = null;
         for (Book b : library.getBookRepository().findAll()) {
-            // Kitabın kategorisi null değilse ismini kontrol et
             if (b.getCategory() != null && b.getCategory().getCategoryName().equalsIgnoreCase(categoryName)) {
                 targetCategory = b.getCategory();
                 break;
@@ -106,7 +105,7 @@ public class Main {
             System.out.println("-> Kitap mevcut kategoriye (" + targetCategory.getCategoryName()+ ") eklendi.");
         }
 
-        // 3. Kitabı ekle
+
         Book newBook = new Book(bookIdCounter++, targetAuthor, title, price, BookStatus.AVAILABLE, "1.Baskı", LocalDate.now(), targetCategory);
         library.addBook(newBook);
         System.out.println("Kitap başarıyla eklendi.");
@@ -114,7 +113,7 @@ public class Main {
 
 
     private static void kitapAra() {
-        System.out.println("1- ID ile, 2- İsim ile, 3- Yazar ile");
+        System.out.println("1- ID ile, 2- İsim ile, 3- Yazar ile, 4- Kategori ile");
         int subChoice = scanner.nextInt(); scanner.nextLine();
 
         if (subChoice == 1) {
@@ -127,6 +126,24 @@ public class Main {
         } else if (subChoice == 3) {
             System.out.print("Yazar: "); String author = scanner.nextLine();
             library.getBookRepository().findByAuthor(author).forEach(Book::display);
+        } else if (subChoice == 4) {
+            System.out.print("Kategori İsmi: ");
+            String categoryName = scanner.nextLine();
+
+            // 1. Önce mevcut kitaplar üzerinden bu kategoriyi bulmamız gerekiyor
+            Category targetCategory = library.getBookRepository().findAll().stream()
+                    .map(Book::getCategory)
+                    .filter(c -> c != null && c.getCategoryName().equalsIgnoreCase(categoryName))
+                    .findFirst()
+                    .orElse(null);
+
+            if (targetCategory != null) {
+                System.out.println("\n--- " + targetCategory.getCategoryName() + " Kategorisindeki Kitaplar ---");
+                library.getBookRepository().findByCategory(targetCategory).forEach(Book::display);
+            } else {
+                System.out.println("Sistemde bu isimle kayıtlı bir kategori bulunamadı.");
+            }
+
         }
     }
 
