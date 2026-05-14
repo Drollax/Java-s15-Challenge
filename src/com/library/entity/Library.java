@@ -1,7 +1,6 @@
 package com.library.entity;
 
 import com.library.books.Book;
-import com.library.books.Category;
 import com.library.repo.BookRepo;
 import com.library.user.Librarian;
 import com.library.user.MemberRecord;
@@ -10,13 +9,13 @@ import java.util.List;
 
 public class Library {
     private String libraryName;
-    private BookRepo bookRepo; // diyagramdaki composition ilişkisi
+    private BookRepo bookRepo;
     private List<MemberRecord> members;
     private List<Librarian> librarians;
 
     public Library(String libraryName) {
         this.libraryName = libraryName;
-        this.bookRepo = new BookRepo(); // kütüphane oluşurken depo da oluşur
+        this.bookRepo = new BookRepo();
         this.members = new ArrayList<>();
         this.librarians = new ArrayList<>();
     }
