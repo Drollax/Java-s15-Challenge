@@ -59,6 +59,7 @@ public class Main {
         System.out.println("4- Tüm Kitapları Listele");
         System.out.println("5- Kitap Ödünç Al");
         System.out.println("6- Kitap İade Et");
+        System.out.println("7- Kitap Güncelle");
         System.out.println("0- Çıkış");
         System.out.print("Seçiminiz: ");
     }
@@ -127,7 +128,7 @@ public class Main {
             System.out.print("Kategori İsmi: ");
             String categoryName = scanner.nextLine();
 
-            // 1. Önce mevcut kitaplar üzerinden bu kategoriyi bulmamız gerekiyor
+            //
             Category targetCategory = library.getBookRepository().findAll().stream()
                     .map(Book::getCategory)
                     .filter(c -> c != null && c.getCategoryName().equalsIgnoreCase(categoryName))

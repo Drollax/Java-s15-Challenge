@@ -27,7 +27,7 @@ public abstract class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(personId, person.personId); // İsime göre kontrol
+        return Objects.equals(personId, person.personId);
     }
 
     @Override

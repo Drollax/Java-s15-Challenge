@@ -10,13 +10,13 @@ import java.util.List;
 
 public class Library {
     private String libraryName;
-    private BookRepo bookRepo; // Diyagramdaki Composition ilişkisi
+    private BookRepo bookRepo; // diyagramdaki composition ilişkisi
     private List<MemberRecord> members;
     private List<Librarian> librarians;
 
     public Library(String libraryName) {
         this.libraryName = libraryName;
-        this.bookRepo = new BookRepo(); // Kütüphane oluşurken depo da oluşur
+        this.bookRepo = new BookRepo(); // kütüphane oluşurken depo da oluşur
         this.members = new ArrayList<>();
         this.librarians = new ArrayList<>();
     }
