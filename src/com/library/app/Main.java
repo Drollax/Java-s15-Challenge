@@ -32,16 +32,16 @@ public class Main {
         while (running) {
             printMenu();
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Boşluk temizleme
+            scanner.nextLine();
 
             switch (choice) {
-                case 1: kitapEkle(); break;
-                case 2: kitapAra(); break;
-                case 3: kitapSil(); break;
-                case 4: kitaplariListele(); break;
-                case 5: oduncAl(); break;
-                case 6: iadeEt(); break;
-                case 7: kitapGuncelle(); break;
+                case 1: addBook(); break;
+                case 2: findBook(); break;
+                case 3: removeBook(); break;
+                case 4: listBook(); break;
+                case 5: borrow(); break;
+                case 6: returnBook(); break;
+                case 7: updateBook(); break;
                 case 0:
                     running = false;
                     System.out.println("Sistemden çıkılıyor...");
@@ -54,7 +54,7 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\n1- Kitap Ekle");
-        System.out.println("2- Kitap Ara (ID/İsim/Yazar)");
+        System.out.println("2- Kitap Ara (ID/İsim/Yazar/Kategori)");
         System.out.println("3- Kitap Sil");
         System.out.println("4- Tüm Kitapları Listele");
         System.out.println("5- Kitap Ödünç Al");
@@ -64,14 +64,13 @@ public class Main {
         System.out.print("Seçiminiz: ");
     }
 
-    private static void kitapEkle() {
+    private static void addBook() {
         System.out.print("Kitap İsmi: "); String title = scanner.nextLine();
         System.out.print("Yazar İsmi: "); String authorName = scanner.nextLine();
         System.out.print("Kategori İsmi: "); String categoryName = scanner.nextLine();
         System.out.print("Fiyat: "); double price = scanner.nextDouble();
 
 
-        // yazarı aradım
         Author targetAuthor = null;
         for (Book b : library.getBookRepository().findAll()) {
             if (b.getAuthor().getName().equalsIgnoreCase(authorName)) {
@@ -82,9 +81,9 @@ public class Main {
 
         if (targetAuthor == null) {
             targetAuthor = new Author(authorIdCounter++, authorName);
-            System.out.println("Yeni yazar oluşturuldu (ID: " + targetAuthor.getPersonId() + ")");
+            System.out.println("Yeni yazar oluşturuldu " + targetAuthor.getPersonId());
         } else {
-            System.out.println("Kitap mevcut yazara bağlandı (ID: " + targetAuthor.getPersonId() + ")");
+            System.out.println("Kitap mevcut yazara bağlandı " + targetAuthor.getPersonId());
         }
 
         //kategoride aynı şekilde
@@ -98,9 +97,9 @@ public class Main {
 
         if (targetCategory == null) {
             targetCategory = new Category(categoryIdCounter++, categoryName);
-            System.out.println("-> Yeni kategori oluşturuldu (ID: " + targetCategory.getCategoryId() + ")");
+            System.out.println("-> Yeni kategori oluşturuldu " + targetCategory.getCategoryId() );
         } else {
-            System.out.println("-> Kitap mevcut kategoriye (" + targetCategory.getCategoryName()+ ") eklendi.");
+            System.out.println("-> Kitap mevcut kategoriye " + targetCategory.getCategoryName());
         }
 
 
@@ -110,7 +109,7 @@ public class Main {
     }
 
 
-    private static void kitapAra() {
+    private static void findBook() {
         System.out.println("1- ID ile, 2- İsim ile, 3- Yazar ile, 4- Kategori ile");
         int subChoice = scanner.nextInt(); scanner.nextLine();
 
@@ -128,7 +127,7 @@ public class Main {
             System.out.print("Kategori İsmi: ");
             String categoryName = scanner.nextLine();
 
-            //
+
             Category targetCategory = library.getBookRepository().findAll().stream()
                     .map(Book::getCategory)
                     .filter(c -> c != null && c.getCategoryName().equalsIgnoreCase(categoryName))
@@ -139,23 +138,23 @@ public class Main {
                 System.out.println("\n--- " + targetCategory.getCategoryName() + " Kategorisindeki Kitaplar ---");
                 library.getBookRepository().findByCategory(targetCategory).forEach(Book::display);
             } else {
-                System.out.println("Sistemde bu isimle kayıtlı bir kategori bulunamadı.");
+                System.out.println("kayıtlı bir kategori bulunamadı.");
             }
 
         }
     }
 
-    private static void kitapSil() {
+    private static void removeBook() {
         System.out.print("Silinecek Kitap ID: ");
         long id = scanner.nextLong();
         library.removeBook(id);
     }
 
-    private static void kitaplariListele() {
+    private static void listBook() {
         library.showBooks();
     }
 
-    private static void oduncAl() {
+    private static void borrow() {
 
         System.out.print("İşlem yapacak Üye ID: ");
         long memberId = scanner.nextLong();
@@ -167,20 +166,18 @@ public class Main {
                 .orElse(null);
 
         if (member == null) {
-            System.out.println("Hata: Bu ID'ye sahip bir üye bulunamadı!");
+            System.out.println("Bu ID'ye sahip bir üye bulunamadı!");
             return;
         }
 
         Librarian admin = library.getLibrarians().get(0);
         if (!admin.verifyMember(member)) {
-            System.out.println("Hata: Üye doğrulaması başarısız!");
+            System.out.println("Üye doğrulaması başarısız!");
             return;
         }
 
         if (member.getNoBooksIssued() >= member.getMaxBookLimit()) {
-            System.out.println("\n--- DİKKAT: LİMİT AŞIMI ---");
-            System.out.println("Hata: " + member.getName() + " zaten " + member.getNoBooksIssued() +
-                    " kitap almış. Limit: " + member.getMaxBookLimit());
+            System.out.println( member.getName() + " zaten 5 kitap almış.");
             System.out.println("Yeni kitap alabilmek için önce elindeki kitaplardan birini iade etmelidir.");
             return;
         }
@@ -206,7 +203,7 @@ public class Main {
         }
     }
 
-    private static void iadeEt() {
+    private static void returnBook() {
 
         System.out.print("İade işlemini yapan Üye ID: ");
         long memberId = scanner.nextLong();
@@ -218,17 +215,17 @@ public class Main {
                 .orElse(null);
 
         if (member == null) {
-            System.out.println("Hata: Üye bulunamadı!");
+            System.out.println("Üye bulunamadı!");
             return;
         }
         // kişinin kitapları
         List<Book> borrowedBooks = member.getBorrowedBooks();
         if (borrowedBooks.isEmpty()) {
-            System.out.println(member.getName() + " isimli üyenin üzerinde ödünç kitap görünmüyor.");
+            System.out.println(member.getName() + " isimli üyenin üzerinde ödünç kitap yok.");
             return;
         }
 
-        System.out.println("\n--- " + member.getName() + " Üzerindeki Kitaplar ---");
+        System.out.println("\n--- " + member.getName() + " nin sahip olduğu kitaplar ---");
         for (Book b : borrowedBooks) {
             System.out.println("ID: " + b.getBookID() + " | İsim: " + b.getBookName() + " | Fiyat: " + b.getPrice() + " TL");
         }
@@ -239,19 +236,19 @@ public class Main {
         Book book = library.getBookRepository().findById(bookId);
 
         if (book == null) {
-            System.out.println("Hata: Kitap bulunamadı.");
+            System.out.println("Kitap bulunamadı.");
             return;
         }
 
         loanService.returnBook(member, book);
 
-        System.out.println("\nİade İşlemi Başarılı!");
+        System.out.println("\nİade başarılı!");
         System.out.println("Üye: " + member.getName());
         System.out.println("Kitap: " + book.getBookName());
-        System.out.println("Geri Ödenen Tutar: " + book.getPrice() + " TL");
-        System.out.println("Üyenin Kalan Kitap Sayısı: " + member.getNoBooksIssued());
+        System.out.println("Geri ödenen tutar: " + book.getPrice() + " TL");
+        System.out.println("Üyenin elindeki kitap sayısı: " + member.getNoBooksIssued());
     }
-    private static void kitapGuncelle() {
+    private static void updateBook() {
         System.out.print("Güncellenecek Kitap ID: ");
         long id = scanner.nextLong();
         scanner.nextLine();
@@ -259,7 +256,7 @@ public class Main {
         Book book = library.getBookRepository().findById(id);
 
         if (book == null) {
-            System.out.println("Hata: Bu ID ile bir kitap bulunamadı.");
+            System.out.println("kitap bulunamadı.");
             return;
         }
 
@@ -267,13 +264,13 @@ public class Main {
         book.display();
         System.out.println("-----------------------");
 
-        System.out.println("Yeni bilgileri giriniz: ");
+        System.out.println("Yeni bilgileri gir: ");
 
-        System.out.print("Yeni İsim (Mevcut: " + book.getBookName() + "): ");
+        System.out.print("Yeni isim (Şuanki: " + book.getBookName() + "): ");
         String newTitle = scanner.nextLine();
         if (!newTitle.isEmpty()) book.setBookName(newTitle);
 
-        System.out.print("Yeni Yazar (Mevcut: " + book.getAuthor().getName() + "): ");
+        System.out.print("Yeni yazar (Şuanki: " + book.getAuthor().getName() + "): ");
         String newAuthorName = scanner.nextLine();
         if (!newAuthorName.isEmpty()) {
 
@@ -291,7 +288,7 @@ public class Main {
             book.setAuthor(targetAuthor);
         }
 
-        System.out.print("Yeni Kategori (Mevcut: " + (book.getCategory() != null ? book.getCategory().getCategoryName() : "Yok") + "): ");
+        System.out.print("Yeni kategori (Şuanki: " + (book.getCategory() != null ? book.getCategory().getCategoryName() : "Yok") + "): ");
         String newCatName = scanner.nextLine();
         if (!newCatName.isEmpty()) {
             Category targetCategory = null;
@@ -308,13 +305,13 @@ public class Main {
             book.setCategory(targetCategory);
         }
 
-        System.out.print("Yeni Fiyat (Mevcut: " + book.getPrice() + "): ");
+        System.out.print("Yeni Fiyat (Şuanki: " + book.getPrice() + "): ");
         String priceInput = scanner.nextLine();
         if (!priceInput.isEmpty()) {
             book.setPrice(Double.parseDouble(priceInput));
         }
 
-        System.out.println("\nKitap bilgileri başarıyla güncellendi.");
+        System.out.println("\nKitap bilgileri güncellendi.");
     }
 
 
